@@ -1,0 +1,9 @@
+bin/
+obj/
+*.suo
+*.user
+*.userosscache
+*.suo
+*.vscode/
+*.git/
+*.DS_Store
