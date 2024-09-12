@@ -95,6 +95,7 @@ jobs:
     permissions:
       contents: read # Allow read access to repository contents
       packages: write # Allow write access to packages (for Docker image uploads)
+      security-events: write # Required for uploading SARIF files
 
     steps:
       - name: Checkout code
@@ -118,7 +119,7 @@ jobs:
           severity: "CRITICAL,HIGH"
 
       - name: Upload Trivy SARIF file
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-results.sarif
 
