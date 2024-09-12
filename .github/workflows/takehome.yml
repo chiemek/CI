@@ -63,6 +63,7 @@ jobs:
             -X
 
   dotnet-security-check:
+    needs: dotnet-test
     runs-on: ubuntu-latest # Use the latest Ubuntu runner for the job
 
     strategy:
@@ -89,6 +90,7 @@ jobs:
         continue-on-error: true
 
   docker-build-and-push:
+    needs: dotnet-security-check
     runs-on: ubuntu-latest
     permissions:
       contents: read # Allow read access to repository contents
