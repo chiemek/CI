@@ -47,7 +47,7 @@ jobs:
         uses: warchant/setup-sonar-scanner@v8
 
       - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: sonarsource/sonarcloud-github-action@main
         env:
           GITHUB_TOKEN: ${{ secrets._GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -71,12 +71,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master # Use the Snyk action for Node.js dependency scanning
-        continue-on-error: true # Continue even if there are vulnerabilities
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Install Snyk CLI
         run: npm install -g snyk # Install the Snyk CLI globally using npm
