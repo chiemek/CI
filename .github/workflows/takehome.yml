@@ -52,7 +52,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets._GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: takehome
+          projectBaseDir: ./webapp
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
@@ -60,6 +60,7 @@ jobs:
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.sources=src/
             -Dsonar.verbose=true
+            -X
 
   dotnet-security-check:
     runs-on: ubuntu-latest # Use the latest Ubuntu runner for the job
@@ -77,9 +78,11 @@ jobs:
 
       - name: Snyk Authenticate
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Snyk Test for Vulnerabilities
-        run: snyk test --file=webapp/webapp.csproj --severity-threshold=medium # Run Snyk security test on the .NET project file
+        run: snyk test --all-projects --severity-threshold=medium # Run Snyk security test on all projects
 
       - name: Snyk Code Test
         run: snyk code test --all-projects
