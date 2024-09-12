@@ -39,6 +39,9 @@ jobs:
       - name: Build the application
         run: dotnet build webapp/webapp.csproj --configuration Release # Build the .NET application
 
+      - name: Format code
+        run: dotnet format --check
+
       - name: Run tests
         run: dotnet test webapp/webapp.csproj --configuration Release # Run .NET unit tests
 
