@@ -8,12 +8,8 @@ on:
     branches:
       - main # Trigger the workflow on pull requests targeting the main branch
 
-permissions:
-  contents: read # Allow read access to repository contents
-  packages: write # Allow write access to packages (for Docker image uploads)
-
 jobs:
-  build:
+  dotnet-test:
     runs-on: ubuntu-latest # Use the latest Ubuntu runner for the job
 
     strategy:
@@ -43,6 +39,68 @@ jobs:
       - name: Build the application
         run: dotnet build webapp/webapp.csproj --configuration Release # Build the .NET application
 
+      - name: Run tests
+        run: dotnet test webapp/webapp.csproj --configuration Release # Run .NET unit tests
+
+        # Setup sonar-scanner
+      - name: Setup SonarQube
+        uses: warchant/setup-sonar-scanner@v8
+
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets._GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: webapp
+          args: >
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.host.url=${{ secrets.SONAR_URL }}
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.sources=src/
+            -Dsonar.verbose=true
+
+  dotnet-security-check:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner for the job
+
+    strategy:
+      matrix:
+        dotnet-version: ["8.0.x"] # Define .NET versions to test (you can add more versions if needed)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master # Use the Snyk action for Node.js dependency scanning
+        continue-on-error: true # Continue even if there are vulnerabilities
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Install Snyk CLI
+        run: npm install -g snyk # Install the Snyk CLI globally using npm
+
+      - name: Snyk Authenticate
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
+      - name: Snyk Test for Vulnerabilities
+        run: snyk test --file=webapp/webapp.csproj --severity-threshold=medium # Run Snyk security test on the .NET project file
+
+      - name: Snyk Code Test
+        run: snyk code test --all-projects
+        continue-on-error: true
+
+  docker-build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Allow read access to repository contents
+      packages: write # Allow write access to packages (for Docker image uploads)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Publish the application
         run: dotnet publish webapp/webapp.csproj --configuration Release --output ./app # Publish the .NET application to the ./app directory
 
@@ -57,6 +115,35 @@ jobs:
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest # Push the Docker image to Docker Hub
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "docker.io/${{ secrets.DOCKER_USERNAME }}/dockertakehome:latest"
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH"
+
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@master
+        with:
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Snyk Authenticate
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
+      - name: Snyk Container monitor
+        run: snyk container monitor ${{ secrets.DOCKER_USERNAME }}/dockertakehome:latest --file=Dockerfile
+        working-directory: ./backend
+
+      - name: Run Snyk to check for vulnerabilities in the Docker image
+        uses: snyk/actions/docker@master
+        with:
+          image: ${{ secrets.DOCKER_USERNAME }}/dockertakehome:latest
+          args: --file=backend/Dockerfile --severity-threshold=high
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
 
       - name: Clean up unused Docker images
         run: docker system prune -f # Optionally clean up unused Docker images to save space
