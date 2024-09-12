@@ -132,7 +132,7 @@ jobs:
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
       - name: Snyk Container monitor
-        run: snyk container monitor ${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest --file=Dockerfile
+        run: snyk container monitor ${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest --file=Dockerfile -d
         working-directory: ./webapp
 
       - name: Run Snyk to check for vulnerabilities in the Docker image
