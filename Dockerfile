@@ -1,16 +1,10 @@
-# Use the official .NET image as the base image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+# Use an Alpine-based .NET image as the base image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS base
 WORKDIR /app
 EXPOSE 80
 
-# Update packages in the base image
-# This step updates the package lists, upgrades all installed packages, 
-# and specifically installs the latest version of zlib1g to address any known vulnerabilities.
-RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends zlib1g \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # Use the SDK image to build the application
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 WORKDIR /src
 COPY ["webapp/webapp.csproj", "webapp/"]
 RUN dotnet restore "webapp/webapp.csproj"
