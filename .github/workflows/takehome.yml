@@ -125,8 +125,8 @@ jobs:
 
       - name: Install Snyk CLI
         uses: snyk/actions/setup@0.4.0
-        with:
-          snyk-token: ${{ secrets.SNYK_TOKEN }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Snyk Authenticate
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
@@ -136,7 +136,7 @@ jobs:
         working-directory: ./webapp
 
       - name: Run Snyk to check for vulnerabilities in the Docker image
-        uses: snyk/actions/docker@v1
+        uses: snyk/actions/docker@master
         with:
           image: ${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest
           args: --file=webapp/Dockerfile --severity-threshold=high
