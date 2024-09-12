@@ -3,6 +3,10 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
+# Patch the base image for security vulnerabilities
+RUN apt-get update && apt-get install -y --no-install-recommends zlib1g \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # Use the SDK image to build the application
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
