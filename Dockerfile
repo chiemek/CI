@@ -3,7 +3,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-# Update zlib1g and other packages in the base image
+# Update packages in the base image
+# This step updates the package lists, upgrades all installed packages, 
+# and specifically installs the latest version of zlib1g to address any known vulnerabilities.
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends zlib1g \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
