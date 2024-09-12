@@ -118,7 +118,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.24.0
         with:
-          image-ref: "docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest"
+          image-ref: "${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest"
           format: "sarif"
           output: "trivy-results.sarif"
           severity: "CRITICAL,HIGH"
@@ -136,7 +136,7 @@ jobs:
         working-directory: ./webapp
 
       - name: Run Snyk to check for vulnerabilities in the Docker image
-        uses: snyk/actions/docker@master
+        uses: snyk/actions/docker@v1
         with:
           image: ${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest
           args: --file=webapp/Dockerfile --severity-threshold=high
