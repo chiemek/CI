@@ -103,17 +103,11 @@ jobs:
       - name: Publish the application
         run: dotnet publish webapp/webapp.csproj --configuration Release --output ./app # Publish the .NET application to the ./app directory
 
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest . # Build the Docker image with the tag "latest"
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }} # Docker Hub username stored in GitHub Secrets
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} # Docker Hub access token stored in GitHub Secrets
-
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest # Push the Docker image to Docker Hub
+      - name: Build and push Docker image
+        run: |
+          echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest .
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.24.0
@@ -123,26 +117,27 @@ jobs:
           output: "trivy-results.sarif"
           severity: "CRITICAL,HIGH"
 
+      - name: Upload Trivy SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: trivy-results.sarif
+
       - name: Install Snyk CLI
         uses: snyk/actions/setup@0.4.0
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-      - name: Snyk Authenticate
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
-
       - name: Snyk Container monitor
         run: snyk container monitor ${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest --file=Dockerfile -d
-        working-directory: ./webapp
 
       - name: Run Snyk to check for vulnerabilities in the Docker image
         uses: snyk/actions/docker@master
         with:
           image: ${{ secrets.DOCKER_HUB_USERNAME }}/dockertakehome:latest
-          args: --file=webapp/Dockerfile --severity-threshold=high
+          args: --file=Dockerfile --severity-threshold=high
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        continue-on-error: true
+        continue-on-error: false # Pipeline will fail if high-severity vulnerabilities are found
 
       - name: Clean up unused Docker images
-        run: docker system prune -f # Optionally clean up unused Docker images to save space
+        run: docker image prune -f # Clean up unused Docker images
