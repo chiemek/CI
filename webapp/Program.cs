@@ -23,6 +23,9 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapGet("/", () => "Hello, World!");
+// Configure the default route for MVC.
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");  // Default route for controllers
 
 app.Run();

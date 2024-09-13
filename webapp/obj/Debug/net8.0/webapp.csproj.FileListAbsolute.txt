@@ -24,3 +24,5 @@ C:\Users\hp\Desktop\Takehome\CI\webapp\obj\Debug\net8.0\refint\webapp.dll
 C:\Users\hp\Desktop\Takehome\CI\webapp\obj\Debug\net8.0\webapp.pdb
 C:\Users\hp\Desktop\Takehome\CI\webapp\obj\Debug\net8.0\webapp.genruntimeconfig.cache
 C:\Users\hp\Desktop\Takehome\CI\webapp\obj\Debug\net8.0\ref\webapp.dll
+C:\Users\hp\Desktop\Takehome\CI\webapp\obj\Debug\net8.0\webapp.RazorAssemblyInfo.cache
+C:\Users\hp\Desktop\Takehome\CI\webapp\obj\Debug\net8.0\webapp.RazorAssemblyInfo.cs
