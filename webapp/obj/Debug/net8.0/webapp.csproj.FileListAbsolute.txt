@@ -26,3 +26,4 @@ C:\Users\hp\Desktop\Takehome\CI\webapp\obj\Debug\net8.0\webapp.genruntimeconfig.
 C:\Users\hp\Desktop\Takehome\CI\webapp\obj\Debug\net8.0\ref\webapp.dll
 C:\Users\hp\Desktop\Takehome\CI\webapp\obj\Debug\net8.0\webapp.RazorAssemblyInfo.cache
 C:\Users\hp\Desktop\Takehome\CI\webapp\obj\Debug\net8.0\webapp.RazorAssemblyInfo.cs
+C:\Users\hp\Desktop\Takehome\CI\webapp\bin\Debug\net8.0\web.config
