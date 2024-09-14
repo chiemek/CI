@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\hp\\Desktop\\Takehome\\CI\\webapp\\webapp.csproj": {}
+    "C:\\Users\\hp\\Desktop\\Assessment\\Question3\\Takehome\\CI\\webapp\\webapp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\hp\\Desktop\\Takehome\\CI\\webapp\\webapp.csproj": {
+    "C:\\Users\\hp\\Desktop\\Assessment\\Question3\\Takehome\\CI\\webapp\\webapp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\hp\\Desktop\\Takehome\\CI\\webapp\\webapp.csproj",
+        "projectUniqueName": "C:\\Users\\hp\\Desktop\\Assessment\\Question3\\Takehome\\CI\\webapp\\webapp.csproj",
         "projectName": "webapp",
-        "projectPath": "C:\\Users\\hp\\Desktop\\Takehome\\CI\\webapp\\webapp.csproj",
+        "projectPath": "C:\\Users\\hp\\Desktop\\Assessment\\Question3\\Takehome\\CI\\webapp\\webapp.csproj",
         "packagesPath": "C:\\Users\\hp\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\hp\\Desktop\\Takehome\\CI\\webapp\\obj\\",
+        "outputPath": "C:\\Users\\hp\\Desktop\\Assessment\\Question3\\Takehome\\CI\\webapp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
