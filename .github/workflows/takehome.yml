@@ -107,8 +107,8 @@ jobs:
       - name: Publish the application
         run: dotnet publish webapp/webapp.csproj --configuration Release --output ./app # Publish the .NET application to the ./app directory
 
-      - name: Publish the application at my desktop
-        run: dotnet publish webapp.csproj --configuration Release --output C:\Users\hp\Desktop\PublishedApp
+      # - name: Publish the application at my desktop
+      #   run: dotnet publish webapp.csproj --configuration Release --output C:\Users\hp\Desktop\PublishedApp
 
       - name: Build and push Docker image
         run: |
